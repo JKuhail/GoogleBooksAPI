@@ -4,19 +4,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
-<!--
-    <TextView
-        android:id="@+id/character"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/character_circle"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:text="A" /> -->
+    android:padding="8dp">
+
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/thumbnail"
         android:layout_width="60dp"

@@ -5,6 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,11 +44,12 @@ public class SearchFragment extends Fragment {
     private BookAdapter bookAdapter;
     private ListView booksListView;
     private TextView empty;
-    private ProgressDialog progressDialog;
     private EditText search;
-    private Button searchButton;
     private String author;
     private String category;
+    private long delay = 1000; // 1 seconds after user stops typing
+    private long last_text_edit = 0;
+    private Handler handler = new Handler();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,7 +58,6 @@ public class SearchFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 
         search = root.findViewById(R.id.search);
-        searchButton = root.findViewById(R.id.search_button);
 
         empty = root.findViewById(R.id.empty);
         booksListView = root.findViewById(R.id.list);
@@ -63,22 +66,45 @@ public class SearchFragment extends Fragment {
         booksListView.setAdapter(bookAdapter);
 
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
+
+        search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                if(!(search.getText().toString().equals(""))) {
-                    data.clear();
-                    search(search.getText().toString());
+            public void beforeTextChanged (CharSequence s,int start, int count,
+                                           int after){
+            }
+            @Override
+            public void onTextChanged ( final CharSequence s, int start, int before,
+                                        int count){
+                //You need to remove this to run only once
+                handler.removeCallbacks(input_finish_checker);
+            }
+            @Override
+            public void afterTextChanged ( final Editable s){
+                //avoid triggering event when text is empty
+                if (s.length() > 0) {
+                    last_text_edit = System.currentTimeMillis();
+                    handler.postDelayed(input_finish_checker, delay);
                 }
             }
-        });
+        }
 
+        );
         return root;
     }
+    private Runnable input_finish_checker = new Runnable() {
+        public void run() {
+            if (System.currentTimeMillis() > (last_text_edit + delay - 500)) {
+                // TODO: do what you need here
+                // ............
+                // ............
+                data.clear();
+                search(search.getText().toString());
+            }
+        }
+    };
 
 
     private void search( String bookTitle){
-        showDialog();
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, BASE_API_URL + bookTitle, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -118,10 +144,8 @@ public class SearchFragment extends Fragment {
 
                         } catch (JSONException e) {
                             Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
-                            hideDialog();
                         }
                         bookAdapter.notifyDataSetChanged();
-                        hideDialog();
 
                     }
                 },new Response.ErrorListener() {
@@ -131,9 +155,8 @@ public class SearchFragment extends Fragment {
                 add.setMessage(error.getMessage()).setCancelable(true);
                 AlertDialog alert = add.create();
                 alert.setTitle("Error!");
-                alert.setMessage("something wrong :(");
+                alert.setMessage("Please check your internet connection.");
                 alert.show();
-                hideDialog();
             }
         });
         AppController.getInstance().addToRequestQueue(objectRequest);
@@ -152,19 +175,5 @@ public class SearchFragment extends Fragment {
             }
         });
     }
-
-    private void showDialog() {
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Data is loading...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-    }
-    private void hideDialog(){
-        if(progressDialog.isShowing()){
-            progressDialog.dismiss();
-        }
-    }
-
-
 
     }
