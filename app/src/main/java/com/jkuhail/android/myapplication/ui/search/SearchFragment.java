@@ -94,9 +94,6 @@ public class SearchFragment extends Fragment {
     private Runnable input_finish_checker = new Runnable() {
         public void run() {
             if (System.currentTimeMillis() > (last_text_edit + delay - 500)) {
-                // TODO: do what you need here
-                // ............
-                // ............
                 data.clear();
                 search(search.getText().toString());
             }
@@ -156,6 +153,7 @@ public class SearchFragment extends Fragment {
                 AlertDialog alert = add.create();
                 alert.setTitle("Error!");
                 alert.setMessage("Please check your internet connection.");
+                alert.setIcon(R.drawable.warning_icon);
                 alert.show();
             }
         });
