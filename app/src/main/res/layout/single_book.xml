@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp">
-
+<!--
     <TextView
         android:id="@+id/character"
         android:layout_width="36dp"
@@ -16,7 +16,13 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:text="A" />
+        android:text="A" /> -->
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="8dp" />
 
     <LinearLayout
         android:layout_width="0dp"

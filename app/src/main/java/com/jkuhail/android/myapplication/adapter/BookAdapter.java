@@ -10,7 +10,10 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.jkuhail.android.myapplication.R;
+import com.jkuhail.android.myapplication.app.AppController;
 import com.jkuhail.android.myapplication.model.Book;
 
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 public class BookAdapter extends BaseAdapter {
     private Activity activity;
     public static ArrayList<Book> data;
-
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     public BookAdapter(Activity activity , ArrayList<Book> data) {
         this.activity = activity;
         this.data = data;
@@ -39,7 +42,7 @@ public class BookAdapter extends BaseAdapter {
         return 0;
     }
 
-    private int getCharacterColor(char character) {
+   /* private int getCharacterColor(char character) {
 
         int magnitudeColorResourceId;
         switch (character) {
@@ -128,11 +131,11 @@ public class BookAdapter extends BaseAdapter {
         return ContextCompat.getColor(activity, magnitudeColorResourceId);
     }
 
-
+*/
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         View root = LayoutInflater.from(activity).inflate(R.layout.single_book , null , false);
-
+/*
         final TextView characterView = root.findViewById(R.id.character);
         GradientDrawable characterCircle = (GradientDrawable) characterView.getBackground();
         String BookTitle = data.get(i).getBookTitle();
@@ -140,8 +143,11 @@ public class BookAdapter extends BaseAdapter {
         int magnitudeColor = getCharacterColor(firstCharacter);
         characterCircle.setColor(magnitudeColor);
 
-
-
+*/
+        if (imageLoader == null)
+            imageLoader = AppController.getInstance().getImageLoader();
+        NetworkImageView thumbNail =  root
+                .findViewById(R.id.thumbnail);
         final TextView bookTitle= root.findViewById(R.id.bookTitle);
         final TextView authorName= root.findViewById(R.id.authorName);
         final TextView publishedDate= root.findViewById(R.id.publishedDate);
@@ -151,7 +157,8 @@ public class BookAdapter extends BaseAdapter {
         authorName.setText(data.get(i).getAuthorName());
         publishedDate.setText(data.get(i).getPublishedDate());
         categories.setText(data.get(i).getCategories());
-        characterView.setText(String.valueOf(firstCharacter));
+        thumbNail.setImageUrl(data.get(i).getImage(), imageLoader);
+//        characterView.setText(String.valueOf(firstCharacter));
         return root;
     }
 }

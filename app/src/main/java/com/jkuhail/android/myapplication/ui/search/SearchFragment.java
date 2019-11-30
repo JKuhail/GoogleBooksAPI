@@ -22,7 +22,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.jkuhail.android.myapplication.MainActivity;
 import com.jkuhail.android.myapplication.R;
 import com.jkuhail.android.myapplication.adapter.BookAdapter;
 import com.jkuhail.android.myapplication.app.AppController;
@@ -36,17 +35,15 @@ import java.util.ArrayList;
 
 
 public class SearchFragment extends Fragment {
-    public static final String BASE_API_URL = "https://www.googleapis.com/books/v1/volumes?q=";
+    private static final String BASE_API_URL = "https://www.googleapis.com/books/v1/volumes?q=";
     private static final String LOG_TAG = "jehad";
     private ArrayList<Book> data = new ArrayList<>();
     private BookAdapter bookAdapter;
     private ListView booksListView;
-    TextView empty;
-    ProgressDialog progressDialog;
-    EditText search;
-
-    Button searchButton;
-
+    private TextView empty;
+    private ProgressDialog progressDialog;
+    private EditText search;
+    private Button searchButton;
     private String author;
     private String category;
 
@@ -80,7 +77,7 @@ public class SearchFragment extends Fragment {
     }
 
 
-    public void search( String bookTitle){
+    private void search( String bookTitle){
         showDialog();
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, BASE_API_URL + bookTitle, null,
                 new Response.Listener<JSONObject>() {
@@ -156,13 +153,13 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    public void showDialog() {
+    private void showDialog() {
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Data is loading...");
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
-    public void hideDialog(){
+    private void hideDialog(){
         if(progressDialog.isShowing()){
             progressDialog.dismiss();
         }
