@@ -1,8 +1,4 @@
-package com.jkuhail.android.myapplication;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-
+package com.jkuhail.android.myapplication.ui.search;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -10,17 +6,24 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.jkuhail.android.myapplication.MainActivity;
+import com.jkuhail.android.myapplication.R;
 import com.jkuhail.android.myapplication.adapter.BookAdapter;
 import com.jkuhail.android.myapplication.app.AppController;
 import com.jkuhail.android.myapplication.model.Book;
@@ -32,7 +35,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class BookListActivity extends AppCompatActivity {
+public class SearchFragment extends Fragment {
     public static final String BASE_API_URL = "https://www.googleapis.com/books/v1/volumes?q=";
     private static final String LOG_TAG = "jehad";
     private ArrayList<Book> data = new ArrayList<>();
@@ -47,18 +50,19 @@ public class BookListActivity extends AppCompatActivity {
     private String author;
     private String category;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_list);
 
-        search = findViewById(R.id.search);
-        searchButton = findViewById(R.id.search_button);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
 
-        empty = findViewById(R.id.empty);
-        booksListView = findViewById(R.id.list);
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
+
+        search = root.findViewById(R.id.search);
+        searchButton = root.findViewById(R.id.search_button);
+
+        empty = root.findViewById(R.id.empty);
+        booksListView = root.findViewById(R.id.list);
         booksListView.setEmptyView(empty);
-        bookAdapter = new BookAdapter(this, data);
+        bookAdapter = new BookAdapter(getActivity(), data);
         booksListView.setAdapter(bookAdapter);
 
 
@@ -72,7 +76,7 @@ public class BookListActivity extends AppCompatActivity {
             }
         });
 
-
+        return root;
     }
 
 
@@ -101,8 +105,8 @@ public class BookListActivity extends AppCompatActivity {
 
                                 // I did this because some books don't have categories.
                                 try{
-                                JSONArray categories = volumeInfo.getJSONArray("categories");
-                                category = categories.getString(0);
+                                    JSONArray categories = volumeInfo.getJSONArray("categories");
+                                    category = categories.getString(0);
                                 } catch (JSONException e){
                                     category = "No category";
                                 }
@@ -126,7 +130,7 @@ public class BookListActivity extends AppCompatActivity {
                 },new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                AlertDialog.Builder add = new AlertDialog.Builder(BookListActivity.this);
+                AlertDialog.Builder add = new AlertDialog.Builder(getContext());
                 add.setMessage(error.getMessage()).setCancelable(true);
                 AlertDialog alert = add.create();
                 alert.setTitle("Error!");
@@ -153,7 +157,7 @@ public class BookListActivity extends AppCompatActivity {
     }
 
     public void showDialog() {
-        progressDialog = new ProgressDialog(BookListActivity.this);
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Data is loading...");
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -164,4 +168,6 @@ public class BookListActivity extends AppCompatActivity {
         }
     }
 
-}
+
+
+    }
