@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,13 +59,10 @@ public class SearchFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 
         search = root.findViewById(R.id.search);
-
         empty = root.findViewById(R.id.empty);
         booksListView = root.findViewById(R.id.list);
         booksListView.setEmptyView(empty);
         bookAdapter = new BookAdapter(getActivity(), data);
-        booksListView.setAdapter(bookAdapter);
-
 
 
         search.addTextChangedListener(new TextWatcher() {
@@ -84,24 +82,32 @@ public class SearchFragment extends Fragment {
                 if (s.length() > 0) {
                     last_text_edit = System.currentTimeMillis();
                     handler.postDelayed(input_finish_checker, delay);
+                    booksListView.setAdapter(null);
+                    empty.setAlpha(0);
                 }
             }
         }
 
         );
+
         return root;
     }
     private Runnable input_finish_checker = new Runnable() {
         public void run() {
             if (System.currentTimeMillis() > (last_text_edit + delay - 500)) {
-                data.clear();
-                search(search.getText().toString());
+                    booksListView.setAdapter(null);
+                    empty.setAlpha(1);
+                    data.clear();
+                    empty.setText("Data is loading...");
+                    search(search.getText().toString());
             }
         }
     };
 
 
     private void search( String bookTitle){
+        booksListView.setAdapter(bookAdapter);
+
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, BASE_API_URL + bookTitle, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -143,18 +149,15 @@ public class SearchFragment extends Fragment {
                             Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
                         }
                         bookAdapter.notifyDataSetChanged();
-
+                        empty.setText("No results!");
                     }
                 },new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                AlertDialog.Builder add = new AlertDialog.Builder(getContext());
-                add.setMessage(error.getMessage()).setCancelable(true);
-                AlertDialog alert = add.create();
-                alert.setTitle("Error!");
-                alert.setMessage("Please check your internet connection.");
-                alert.setIcon(R.drawable.warning_icon);
-                alert.show();
+                booksListView.setAdapter(null);
+                empty.setText("Nothing to show!");
+                if(search.getText().toString().equals(" ") || search.getText().toString().equals("  "))
+                    search.setError("This field is empty!");
             }
         });
         AppController.getInstance().addToRequestQueue(objectRequest);
