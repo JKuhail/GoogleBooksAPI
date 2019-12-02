@@ -1,32 +1,26 @@
-package com.jkuhail.android.myapplication.ui.search;
+package com.jkuhail.android.myapplication;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.jkuhail.android.myapplication.R;
 import com.jkuhail.android.myapplication.adapter.BookAdapter;
 import com.jkuhail.android.myapplication.app.AppController;
 import com.jkuhail.android.myapplication.model.Book;
@@ -37,8 +31,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-
-public class SearchFragment extends Fragment {
+public class SearchActivity extends AppCompatActivity {
     private static final String BASE_API_URL = "https://www.googleapis.com/books/v1/volumes?q=";
     private static final String LOG_TAG = "jehad";
     private ArrayList<Book> data = new ArrayList<>();
@@ -48,21 +41,24 @@ public class SearchFragment extends Fragment {
     private EditText search;
     private String author;
     private String category;
+    private String publishedDate;
+    private String description;
+    private int pageCount;
     private long delay = 1000; // 1 seconds after user stops typing
     private long last_text_edit = 0;
     private Handler handler = new Handler();
+    private Book book;
 
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
-        View root = inflater.inflate(R.layout.fragment_search, container, false);
-
-        search = root.findViewById(R.id.search);
-        empty = root.findViewById(R.id.empty);
-        booksListView = root.findViewById(R.id.list);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+        search = findViewById(R.id.search);
+        empty = findViewById(R.id.empty);
+        booksListView = findViewById(R.id.list);
         booksListView.setEmptyView(empty);
-        bookAdapter = new BookAdapter(getActivity(), data);
+        bookAdapter = new BookAdapter(SearchActivity.this, data);
+
 
 
         search.addTextChangedListener(new TextWatcher() {
@@ -89,26 +85,25 @@ public class SearchFragment extends Fragment {
         }
 
         );
-
-        return root;
     }
+
+
     private Runnable input_finish_checker = new Runnable() {
         public void run() {
-            if (System.currentTimeMillis() > (last_text_edit + delay - 500)) {
-                    booksListView.setAdapter(null);
-                    empty.setAlpha(1);
-                    data.clear();
-                    empty.setText("Data is loading...");
-                    search(search.getText().toString());
+            if (System.currentTimeMillis() > (last_text_edit + delay - 500)) { //don't change this
+                booksListView.setAdapter(null);
+                data.clear();
+                empty.setAlpha(1);
+                empty.setText("Data is loading...");
+                search(search.getText().toString());
             }
         }
     };
 
-
     private void search( String bookTitle){
         booksListView.setAdapter(bookAdapter);
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, BASE_API_URL + bookTitle, null,
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, BASE_API_URL + bookTitle + "&maxResults=40", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -122,12 +117,29 @@ public class SearchFragment extends Fragment {
                                 JSONObject volumeInfo = book_element.getJSONObject("volumeInfo");
                                 String title = volumeInfo.getString("title");
 
+                                try{
                                 JSONArray authors = volumeInfo.getJSONArray("authors");
                                 author = authors.getString(0);
+                                } catch (JSONException e){
+                                    author = "No authors";
+                                }
+                                try{
+                                    publishedDate = volumeInfo.getString("publishedDate");
+                                } catch (JSONException e){
+                                    publishedDate = "no published date";
+                                }
+                                try{
+                                    description = volumeInfo.getString("description");
+                                } catch (JSONException e){
+                                    description = "no description";
+                                }
+                                try{
+                                    pageCount = volumeInfo.getInt("pageCount");
+                                } catch (JSONException e){
+                                    pageCount = 0;
+                                }
 
-                                String publishedDate = volumeInfo.getString("publishedDate");
-                                String description = volumeInfo.getString("description");
-                                int pageCount = volumeInfo.getInt("pageCount");
+
 
                                 // I did this because some books don't have categories.
                                 try{
@@ -141,12 +153,12 @@ public class SearchFragment extends Fragment {
                                 String imageLink = imageLinks.getString("thumbnail");
                                 String url = volumeInfo.getString("canonicalVolumeLink");
 
-                                Book book = new Book(title , author , publishedDate , description , pageCount , category , imageLink , url);
+                                book = new Book(title , author , publishedDate , description , pageCount , category , imageLink , url);
                                 data.add(book);
                             }
 
                         } catch (JSONException e) {
-                            Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
+                            Log.e(LOG_TAG, "Problem parsing the book JSON results", e);
                         }
                         bookAdapter.notifyDataSetChanged();
                         empty.setText("No results!");
@@ -165,6 +177,7 @@ public class SearchFragment extends Fragment {
         booksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                /*
                 // Convert the String URL into a URI object (to pass into the Intent constructor)
                 Uri bookUri = Uri.parse(BookAdapter.data.get(i).getUrl());
 
@@ -172,9 +185,11 @@ public class SearchFragment extends Fragment {
                 Intent websiteIntent = new Intent(Intent.ACTION_VIEW, bookUri);
 
                 // Send the intent to launch a new activity
-                startActivity(websiteIntent);
+                startActivity(websiteIntent);*/
+                Intent intent = new Intent(SearchActivity.this, BookDetailsActivity.class);
+                intent.putExtra("book", data.get(i));
+                startActivity(intent);
             }
         });
     }
-
-    }
+}

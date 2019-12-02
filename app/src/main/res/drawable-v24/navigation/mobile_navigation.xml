@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.jkuhail.android.myapplication.ui.search"
+        android:name="com.jkuhail.android.myapplication.ui.explore"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 

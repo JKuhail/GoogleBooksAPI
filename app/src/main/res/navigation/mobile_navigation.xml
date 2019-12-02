@@ -7,14 +7,14 @@
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.jkuhail.android.myapplication.ui.search.SearchFragment"
-        android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
+        android:name="com.jkuhail.android.myapplication.ui.explore.ExploreFragment"
+        android:label="@string/title_explore"
+        tools:layout="@layout/fragment_explore" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.jkuhail.android.myapplication.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_home"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment

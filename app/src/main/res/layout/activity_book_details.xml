@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BookDetailsActivity"
+    android:orientation="vertical"
+    android:padding="12dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp">
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/book_cover"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginEnd="8dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/bookTitle_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/textColorEarthquakeLocation"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:text="Book Title" />
+            <TextView
+                android:id="@+id/authorName_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/textColorEarthquakeDetails"
+                android:textSize="18sp"
+                android:text="Author name" />
+            <TextView
+                android:id="@+id/categories_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/textColorEarthquakeDetails"
+                android:textSize="16sp"
+                android:text="category"
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/publishedDate_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/textColorEarthquakeDetails"
+                android:textSize="12sp"
+                android:text="publishedDate" />
+            <TextView
+                android:id="@+id/pageCount_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/textColorEarthquakeDetails"
+                android:textSize="12sp"
+                android:text="pageCount" />
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="@color/textColorEarthquakeLocation"
+        android:textSize="22sp"
+        android:text="Description" />
+    <TextView
+        android:id="@+id/description_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="8"
+        android:textColor="@color/textColorEarthquakeDetails"
+        android:textSize="16sp"
+        android:text="category"
+        android:layout_marginBottom="18dp"/>
+
+    <TextView
+        android:id="@+id/url_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="#3ea6ff"
+        android:textSize="16sp"
+        android:text="Click to read"
+        android:layout_marginBottom="8dp"/>
+
+
+</LinearLayout>

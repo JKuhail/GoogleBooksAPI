@@ -9,7 +9,7 @@
 
 
         <EditText
-            android:id="@+id/search"
+            android:id="@+id/search_explore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -24,25 +24,6 @@
             android:drawableLeft="@drawable/search_icon"
             android:textColor="#83868A"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nothing to show!"
-            android:layout_centerInParent="true" />
-
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:orientation="vertical" />
-    </RelativeLayout>
 
 
 
