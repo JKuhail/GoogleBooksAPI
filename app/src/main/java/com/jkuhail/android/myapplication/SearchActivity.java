@@ -177,15 +177,6 @@ public class SearchActivity extends AppCompatActivity {
         booksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                /*
-                // Convert the String URL into a URI object (to pass into the Intent constructor)
-                Uri bookUri = Uri.parse(BookAdapter.data.get(i).getUrl());
-
-                // Create a new intent to view the earthquake URI
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, bookUri);
-
-                // Send the intent to launch a new activity
-                startActivity(websiteIntent);*/
                 Intent intent = new Intent(SearchActivity.this, BookDetailsActivity.class);
                 intent.putExtra("book", data.get(i));
                 startActivity(intent);
